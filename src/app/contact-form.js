@@ -7,19 +7,16 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function ContactForm() {
   const [values, setValues] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [sendError, setSendError] = useState("");
+  const [draftPrepared, setDraftPrepared] = useState(false);
 
   function updateField(event) {
     const { name, value } = event.target;
     setValues((current) => ({ ...current, [name]: value }));
     setErrors((current) => ({ ...current, [name]: "" }));
-    setSubmitted(false);
-    setSendError("");
+    setDraftPrepared(false);
   }
 
-  async function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
     const nextErrors = {};
 
@@ -38,41 +35,16 @@ export default function ContactForm() {
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
-      setSubmitted(false);
+      setDraftPrepared(false);
       return;
     }
 
-    setSubmitted(false);
-    setSendError("");
-    setIsSending(true);
+    const subject = `Portfolio contact form message from ${values.name.trim()}`;
+    const body = `Name: ${values.name.trim()}\nEmail: ${values.email.trim()}\n\n${values.message.trim()}`;
+    const query = new URLSearchParams({ subject, body });
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name.trim(),
-          email: values.email.trim(),
-          message: values.message.trim(),
-        }),
-      });
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Your message could not be sent.");
-      }
-
-      setSubmitted(true);
-      setValues({ name: "", email: "", message: "" });
-    } catch (error) {
-      setSendError(
-        error instanceof Error
-          ? error.message
-          : "Your message could not be sent. Please try again.",
-      );
-    } finally {
-      setIsSending(false);
-    }
+    window.location.href = `mailto:zaidsaleem375@gmail.com?${query.toString()}`;
+    setDraftPrepared(true);
   }
 
   return (
@@ -148,10 +120,9 @@ export default function ContactForm() {
 
       <button
         className="button-primary form-submit"
-        disabled={isSending}
         type="submit"
       >
-        {isSending ? "Sending..." : "Send message"}
+        Prepare email
         <svg
           aria-hidden="true"
           className="h-4 w-4"
@@ -169,13 +140,9 @@ export default function ContactForm() {
       </button>
 
       <p aria-live="polite" className="form-status">
-        {submitted && "Thanks! Your message has been sent to Zaid."}
+        {draftPrepared &&
+          "Your email app should open with a draft. Press Send there to send your message."}
       </p>
-      {sendError && (
-        <p aria-live="assertive" className="form-error">
-          {sendError}
-        </p>
-      )}
     </form>
   );
 }

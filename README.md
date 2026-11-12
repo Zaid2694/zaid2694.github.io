@@ -20,16 +20,26 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Contact form email
+## Contact form
 
-The contact form sends messages to `zaidsaleem375@gmail.com` through Gmail. To enable delivery locally:
+The contact form opens the visitor's email app with a prepared message addressed to `zaidsaleem375@gmail.com`. The visitor must send the draft from their email app.
 
-1. Enable 2-Step Verification for the sending Gmail account and create a Google App Password.
-2. Copy `.env.example` to `.env.local` in the project root.
-3. Replace the example values with the sending Gmail address and its App Password. Do not use your regular Gmail password or commit `.env.local`.
-4. Restart the development server.
+## Deploy on GitHub Pages
 
-For a deployed site, add `GMAIL_USER` and `GMAIL_APP_PASSWORD` as environment variables in the hosting provider's project settings, then redeploy. Keep the App Password private.
+This project is configured for a static GitHub Pages export. To use the root URL `https://zaid2694.github.io/`:
+
+1. Create a new, empty GitHub repository named `Zaid2694.github.io`. Keep the existing `Portfolio` repository so its Vercel deployment remains connected.
+2. In the new repository's **Settings → Pages**, set the source to **GitHub Actions**.
+3. Commit the site changes, then add the new repository as a remote and push the `main` branch:
+
+   ```bash
+   git remote add pages https://github.com/Zaid2694/Zaid2694.github.io.git
+   git push pages HEAD:main
+   ```
+
+4. The workflow in `.github/workflows/deploy.yml` builds the site and publishes the `out` directory. Open `https://zaid2694.github.io/` after the Pages deployment completes.
+
+GitHub Pages does not run Next.js server routes. The contact form therefore opens an email draft instead of sending email directly.
 
 ## Learn More
 
@@ -39,9 +49,3 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
